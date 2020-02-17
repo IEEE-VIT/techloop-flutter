@@ -44,6 +44,7 @@ class _HomePageState extends State<HomePage> {
       ),
 
       floatingActionButton: FloatingActionButton(
+        elevation: 20,
         onPressed: (){
           return showDialog(
             context: context, 
@@ -74,7 +75,6 @@ class _HomePageState extends State<HomePage> {
                           priority: _priorityController.text
                           )
                         );
-                        print(getTasks.length);
                       });
                     },
                     child: Text('ADD', style: TextStyle(
@@ -139,17 +139,20 @@ class _HomePageState extends State<HomePage> {
   }
 }
 
-final makeAppBar = AppBar(
-  elevation: 5,
-  backgroundColor: Color.fromRGBO(59, 67, 88, 1.0),
-  title: Text("To-Do List"),
-  centerTitle: true,
-  actions: <Widget>[
-    IconButton(
-      icon: Icon(Icons.list),
-      onPressed: () {},
-    )
-  ]
+final makeAppBar = PreferredSize(
+  preferredSize: Size.fromHeight(60),
+  child: AppBar(
+    elevation: 5,
+    backgroundColor: Color.fromRGBO(59, 67, 88, 1.0),
+    title: Text("To-Do List"),
+    centerTitle: true,
+    actions: <Widget>[
+      IconButton(
+        icon: Icon(Icons.list),
+        onPressed: () {},
+      )
+    ]
+  )
 );
 
 final makeBottom = Container(
