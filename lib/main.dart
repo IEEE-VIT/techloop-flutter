@@ -14,29 +14,143 @@ class MyApp extends StatelessWidget {
   }
 }
 
-class HomePage extends StatelessWidget {
+class HomePage extends StatefulWidget {
+
+  @override
+  _HomePageState createState() => _HomePageState();
+}
+
+class _HomePageState extends State<HomePage> {
+
+  TextEditingController _titleController = TextEditingController();
+  TextEditingController _priorityController = TextEditingController();
+  TextEditingController _valueController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        backgroundColor: Color.fromRGBO(59, 65, 84, 1.0),
-        appBar: makeAppBar,
-        bottomNavigationBar: makeBottom,
-        body: makeBody);
+      backgroundColor: Color.fromRGBO(59, 65, 84, 1.0),
+      appBar: makeAppBar,
+      bottomNavigationBar: makeBottom,
+      body: Container(
+        child: ListView.builder(
+          scrollDirection: Axis.vertical,
+          shrinkWrap: true,
+          itemCount: getTasks.length,
+          itemBuilder: (BuildContext context, int index) {
+            return makeCard(getTasks[index]);
+          },
+        ),
+      ),
+
+      floatingActionButton: FloatingActionButton(
+        onPressed: (){
+          return showDialog(
+            context: context, 
+            barrierDismissible: false,
+            builder: (BuildContext context) {
+              return AlertDialog(
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                actions: <Widget>[
+                  FlatButton(
+                    onPressed: (){
+                      Navigator.of(context).pop();
+                      _priorityController.clear();
+                      _titleController.clear();
+                      _valueController.clear();
+                    },
+                    child: Text('CANCEL', style: TextStyle(
+                      color: Colors.white
+                    ),),
+                  ),
+                  FlatButton(
+                    onPressed: (){
+                      Navigator.of(context).pop();
+                      setState(() {
+                        getTasks.add(
+                          Task(
+                          indicatorValue: double.parse(_valueController.text), 
+                          title: _titleController.text, 
+                          priority: _priorityController.text
+                          )
+                        );
+                        print(getTasks.length);
+                      });
+                    },
+                    child: Text('ADD', style: TextStyle(
+                      color: Colors.white
+                    ),),
+                  ),
+                ],
+                backgroundColor: Color.fromRGBO(59, 67, 88, 1.0),
+                title: Column(
+                  children: <Widget>[
+                    Center(
+                      child: Text('Add a new task', style: TextStyle(
+                        color: Colors.white
+                      ),)
+                    ),
+                    SizedBox(height: 20,),
+                    TextField(
+                      textInputAction: TextInputAction.next,
+                      controller: _titleController,
+                      decoration: InputDecoration(
+                        hintText: "Enter Task",
+                        hintStyle: TextStyle(
+                          color: Colors.white
+                        )
+                      ),
+                      style: TextStyle(color: Colors.white),
+                    ),
+                    TextField(
+                      textInputAction: TextInputAction.next,
+                      controller: _priorityController,
+                      decoration: InputDecoration(
+                        hintText: "Enter Priority",
+                        hintStyle: TextStyle(
+                          color: Colors.white
+                        )
+                      ),
+                      style: TextStyle(color: Colors.white),
+                    ),
+                    TextField(
+                      textInputAction: TextInputAction.done,
+                      controller: _valueController,
+                      keyboardType: TextInputType.number,
+                      decoration: InputDecoration(
+                        hintText: "Enter Progress Value",
+                        hintStyle: TextStyle(
+                          color: Colors.white
+                        )
+                      ),
+                      style: TextStyle(color: Colors.white),
+                    ),
+                  ],
+                )
+              );
+            }
+          );
+        },
+        child: Icon(Icons.add,),
+        backgroundColor: Color.fromRGBO(59, 67, 88, 1.0),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
+      ),
+    );
   }
 }
 
 final makeAppBar = AppBar(
-    elevation: 5,
-    backgroundColor: Color.fromRGBO(59, 67, 88, 1.0),
-    title: Text("To-Do List"),
-    centerTitle: true,
-    actions: <Widget>[
-      IconButton(
-        icon: Icon(Icons.list),
-        onPressed: () {},
-      )
-    ]);
+  elevation: 5,
+  backgroundColor: Color.fromRGBO(59, 67, 88, 1.0),
+  title: Text("To-Do List"),
+  centerTitle: true,
+  actions: <Widget>[
+    IconButton(
+      icon: Icon(Icons.list),
+      onPressed: () {},
+    )
+  ]
+);
 
 final makeBottom = Container(
   height: 55.0,
@@ -66,18 +180,9 @@ final makeBottom = Container(
   ),
 );
 
-final makeBody = Container(
-  child: ListView.builder(
-    scrollDirection: Axis.vertical,
-    shrinkWrap: true,
-    itemCount: getTasks.length,
-    itemBuilder: (BuildContext context, int index) {
-      return makeCard(getTasks[index]);
-    },
-  ),
-);
 
  Card makeCard(Task task) => Card(
+  key: ValueKey(task.title),
   elevation: 8.0,
   margin: new EdgeInsets.symmetric(horizontal: 10.0, vertical: 6.0),
   child: Container(
@@ -87,6 +192,7 @@ final makeBody = Container(
 );
 
 ListTile makeListTile(Task task) => ListTile(
+
   contentPadding:
       EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
   leading: Container(
@@ -100,8 +206,6 @@ ListTile makeListTile(Task task) => ListTile(
     task.title,
     style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
   ),
-
-
   subtitle: Row(
     children: <Widget>[
       Expanded(
