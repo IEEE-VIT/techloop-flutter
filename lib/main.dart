@@ -42,7 +42,6 @@ class _HomePageState extends State<HomePage> {
           },
         ),
       ),
-
       floatingActionButton: FloatingActionButton(
         elevation: 20,
         onPressed: (){
@@ -66,7 +65,6 @@ class _HomePageState extends State<HomePage> {
                   ),
                   FlatButton(
                     onPressed: (){
-                      Navigator.of(context).pop();
                       setState(() {
                         getTasks.add(
                           Task(
@@ -76,6 +74,10 @@ class _HomePageState extends State<HomePage> {
                           )
                         );
                       });
+                      _priorityController.clear();
+                      _titleController.clear();
+                      _valueController.clear();
+                      Navigator.of(context).pop();
                     },
                     child: Text('ADD', style: TextStyle(
                       color: Colors.white
